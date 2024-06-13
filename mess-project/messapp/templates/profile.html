@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+
+{% block content %}
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/profile.css' %}">
+    <div class="profile-container",  style="background-image: url('{{ user_profile.background_image.url }}') ; background-size: cover;">
+        <div class="profile-header">
+            <img src="{{ user_profile.avatar.url }}" alt="Avatar">
+            <div class="profile-info">
+                <h2 style="text-shadow: 2px 2px 4px rgba(1, 1, 1, 0.9);">{{ user.first_name }} {{ user.last_name }}</h2>
+                <p>Заходил: {{ user_profile.user.last_login }} | {% if user_profile.is_online %}Онлайн{% else %}Не в сети{% endif %}</p>
+            </div>
+        </div>
+        {% if not is_own_profile %}
+        {% if not is_friends %}
+            {% if not is_pending_sent and not is_pending_received %}
+                <a href="{% url 'send_friend_request' user.id %}">Отправить заявку в друзья</a>
+            {% elif is_pending_sent %}
+                <p>Запрос отправлен, ожидается подтверждение.</p>
+            {% elif is_pending_received %}
+                <p>Этот пользователь отправил вам запрос в друзья.</p>
+            {% endif %}
+        {% else %}
+            <a href="{% url 'remove_friend' user.id %}">Удалить из друзей</a>
+        {% endif %}
+    {% endif %}
+
+    {% if pending_requests %}
+        <h3 style="text-shadow: 2px 2px 4px rgba(1, 1, 1, 0.9);">Заявка в друзья</h3>
+        <ul>
+            {% for req in pending_requests %}
+                <li>
+                    {{ req.from_user.username }}
+                    <a href="{% url 'accept_friend_request' req.from_user.id %}">Принять</a>
+                    <a href="{% url 'decline_friend_request' req.from_user.id %}">Отклонить</a>
+                </li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+    {% if is_pending_sent %}
+        <a href="{% url 'cancel_friend_request' user.id %}">Отменить запрос дружбы</a>
+    {% endif %}
+
+        <div class="profile-section">
+            <h3 style="text-shadow: 2px 2px 4px rgba(1, 1, 1, 0.9);">Name</h3>
+            <div class="profile-item">
+                {% load static %}
+                <img src="{% get_static_prefix %}image/namecard.png" alt="Name Icon">
+                <div>
+                    <p style="text-shadow: 2px 2px 4px rgba(1, 1, 1, 0.9);">{{ user.first_name }} {{ user.last_name }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="profile-section">
+            <h3 style="text-shadow: 2px 2px 4px rgba(1, 1, 1, 0.9);">Description</h3>
+            <div class="profile-item">
+                {% load static %}
+                <img src="{% get_static_prefix %}image/info.png" alt="Bio Icon">
+                <div>
+                    <p style="text-shadow: 2px 2px 4px rgba(1, 1, 1, 0.9);">{{ user_profile.description | default:"Add a description" }}</p>
+                </div>
+            </div>
+        </div>
+        <a href="{% url 'edit_profile' %}" class="save-button">Edit Profile</a>
+    </div>   
+{% endblock %}

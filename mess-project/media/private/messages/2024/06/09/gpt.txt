@@ -1,0 +1,101 @@
+Извините за неудобства. Вот полный код для отправки файлов через WebSocket с использованием Django Channels:
+
+В файле consumers.py добавьте следующий код для сохранения файла на сервере:
+
+import asyncio
+import uuid
+
+class ChatConsumer(AsyncWebsocketConsumer):
+    # ...
+
+    async def save_file(self, file):
+        # Создание уникального имени для файла
+        file_name = f'{uuid.uuid4()}_{file["name"]}'
+
+        # Сохранение файла на сервере
+        async with asyncio.open_file(file_name, 'wb') as f:
+            await f.write(file["body"])
+
+        return file_name
+Этот код создает уникальное имя для файла, используя UUID, и сохраняет файл на сервере с помощью asyncio.open_file. Затем он возвращает имя файла, чтобы мы могли отправить его в группу комнат.
+
+В том же файле consumers.py добавьте следующий код для обработки файлов, отправленных через WebSocket:
+
+class ChatConsumer(AsyncWebsocketConsumer):
+    # ...
+
+    async def receive(self, text_data):
+        # Обработка входящего сообщения от WebSocket
+        text_data_json = json.loads(text_data)
+        message = text_data_json['message']
+        sender = text_data_json['sender']  # Получаем имя отправителя
+        file = text_data_json.get('file')  # Получаем файл, если он был отправлен
+
+        if file:
+            # Сохранение файла на сервере
+            file_path = await self.save_file(file)
+
+            # Отправка сообщения с информацией о файле в группу комнат
+            await self.channel_layer.group_send(
+                self.room_group_name,
+                {
+                    'type': 'chat_message',
+                    'message': f'{sender} отправил(а) файл {file["name"]}',
+                    'file_path': file_path,
+                    'sender': sender,
+                }
+            )
+        else:
+            # Отправка текстового сообщения в группу комнат
+            await self.channel_layer.group_send(
+                self.room_group_name,
+                {
+                    'type': 'chat_message',
+                    'message': message,
+                    'sender': sender,
+                }
+            )
+Этот код добавляет проверку на наличие файла в сообщении. Если файл был отправлен, то мы сохраняем его на сервере с помощью save_file, а затем отправляем сообщение с информацией о файле в группу комнат. Если файл не был отправлен, то мы просто отправляем текстовое сообщение в группу комнат.
+
+В файле chat.html добавьте следующий код для отправки файлов через WebSocket:
+
+<input type="file" id="id_file">
+<button type="button" id="send-file-button">Send File</button>
+
+<script>
+    // ...
+
+    function sendFile(file) {
+        if (file) {
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = async function () {
+                const fileData = {
+                    name: file.name,
+                    type: file.type,
+                    size: file.size,
+                    body: reader.result.split(',')[1]
+                };
+                await chatSocket.send(JSON.stringify({
+                    'message': '',
+                    'sender': '{{ request.user.username }}',
+                    'file': fileData
+                }));
+            };
+            reader.onerror = function (error) {
+                console.log('Error: ', error);
+            };
+        }
+    }
+
+    $('#send-file-button').click(function () {
+        const fileInput = $('#id_file');
+        const file = fileInput[0].files[0];
+        sendFile(file);
+        fileInput.val(''); // Очистка поля ввода после отправки файла
+        return false;
+    });
+</script>
+Этот код добавляет поле ввода для выбора файла и кнопку для его отправки. При нажатии на кнопку, мы получаем файл из поля ввода, создаем объект FileReader, чтобы прочитать содержимое файла, а затем отправляем файл через WebSocket.
+
+Надеюсь, что это поможет вам решить проблему с отправкой файлов через WebSocket.

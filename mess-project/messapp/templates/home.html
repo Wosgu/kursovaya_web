@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+{% load custom_filters %}
+{% block content %}
+    {% if user.is_authenticated %}
+    <div class="osnova">
+        <div class="chat-container">
+            <div class="user-list">
+                <h3 class="tablename">Пользователи</h3>
+
+                <li class="user-item create-chat-button">
+                    <a href="{% url 'create_group_chat' %}" class="username">Создать чат</a>
+                </li>
+                <li class="user-item create-chat-button">
+                    <a href="{% url 'create_channel' %}" class="username">Создать канал</a>
+                </li>
+                <ul>
+                    {% for user in users %}
+                        {% with last_message=last_messages|get_item:user.pk %}
+                            <li class="user-item{% if last_message and not read_messages|get_item:user.pk and last_message.sender_id != idUserCur %} unread-message{% endif %}">
+                                <img src="{{ user.userprofile.avatar.url }}" alt="{{ user.username }}" class="avatar">
+                                <div class="user-info">
+                                    <a href="{% url 'pers' user.id %}" class="username">{{ user.username }}
+                                    {% if user.userprofile.is_online %}
+                                        <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="15" height="15" viewBox="0 0 172 172" style="fill:#26e07f;">
+                                            <g fill="none" fill-rule="nonzero" stroke="none" stroke-width="1" stroke-linecap="butt" stroke-linejoin="miter" stroke-miterlimit="10" stroke-dasharray="" stroke-dashoffset="0" font-family="none" font-weight="none" font-size="none" text-anchor="none" style="mix-blend-mode: normal">
+                                            <g fill="#1fb141">
+                                                <path d="M 86,86 m -64, 0 a 64,64 0 1,0 128,0 a 64,64 0 1,0 -128,0"></path>
+                                            </g>
+                                            </g>
+                                        </svg>
+                                    {% endif %}</a>
+                                    <p>{% if last_message %}{{ last_message.content }}{% else %}Начните общение👋{% endif %}</p>
+                                </div>
+                                {% if last_message and not read_messages|get_item:user.pk %}
+                                    <svg id="Layer_3" width="15" height="15" enable-background="new 0 0 100 100" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><g>
+                                        <path d="m40.026 82.318c-2.137 0-4.146-.832-5.656-2.343l-22.502-22.502c-1.512-1.511-2.344-3.52-2.344-5.657s.832-4.146 2.344-5.657l6.187-6.187c1.512-1.511 
+                                        3.521-2.343 5.657-2.343s4.146.832 5.656 2.343l9.244 9.243h.001c.754.755 2.072.755 2.826 0l29.192-29.191c1.511-1.511 3.52-2.343 5.656-2.343s4.146.832 5.657 
+                                        2.343l6.187 6.188c1.512 1.511 2.344 3.52 2.344 5.657s-.832 4.146-2.344 5.657l-42.448 42.449c-1.511 1.511-3.52 2.343-5.657 2.343zm-16.314-38.689c-.534 
+                                        0-1.037.208-1.415.586l-6.187 6.187c-.378.378-.586.88-.586 1.415s.208 1.036.586 1.414l22.502 22.501c.756.756 2.073.755 
+                                        2.827 0l42.45-42.449c.378-.378.586-.88.586-1.415s-.208-1.036-.586-1.414l-6.187-6.188c-.756-.755-2.074-.755-2.828 0l-29.191 29.192c-1.511 1.511-3.52 
+                                        2.343-5.656 2.343s-4.146-.832-5.656-2.343l-9.244-9.244c-.379-.377-.881-.585-1.415-.585z"/></g>
+                                    </svg>
+                                {% else %}
+                                    <svg width="20" height="20" viewBox="0 0 520 520" xmlns="http://www.w3.org/2000/svg"><g id="_95-Double_tick" data-name="95-Double tick">
+                                        <path d="m485.274 183.956-48.461-51.369a10 10 0 0 0 -14.932.432l-123.089 146.6-29.724-23.883 54.44-58.078a10 10 0 0 0 
+                                        -.022-13.7l-48.461-51.369a10 10 0 0 0 -14.932.432l-123.093 146.597-63.915-51.358a10 10 0 0 0 -14.79 2.569l-24.821 40.5a10 10 0 0 0 1.191 
+                                        12.023l96.369 104a10 10 0 0 0 7.307 3.2h.028a10 10 0 0 0 7.3-3.161l74.02-78.969 73.137 78.927a10 10 0 0 0 7.307 3.2h.028a10 10 0 0 0 
+                                        7.3-3.161l177.839-189.731a10 10 0 0 0 -.026-13.701zm-346.863 181.928-83.924-90.569 14.925-24.35 62.688 50.374a10 10 0 0 0 13.922-1.365l122.164-145.492 
+                                        34.3 36.359-49.053 52.331-18.56-14.912a10 10 0 0 0 -14.79 2.569l-24.821 40.5a10 10 0 0 0 1.191 12.023l9.6 10.364zm161.788 0-83.924-90.569 14.925-24.35 
+                                        62.694 50.373a10 10 0 0 0 13.921-1.364l122.159-145.492 34.3 36.359z"></g>
+                                    </svg>
+                                {% endif %}
+                            </li>
+                        {% endwith %}
+                    {% endfor %}
+                    {% for chat in chats %}
+                    <li class="user-item{% if not read_group_messages|get_item:chat.pk %} unread-message{% endif %}">
+                        <img src="{{ chat.avatar.url }}" alt="{{ chat.name }}" class="avatar">
+                        <div class="user-info">
+                            <a href="{% url 'group_chat_detail' chat.id %}" class="username">{{ chat.name }}</a>
+                            <p>{{ last_group_messages|get_item:chat.pk }}</p>
+                        </div>
+                    </li>
+                    {% endfor %}
+                    {% for channel in channels %}
+                    <li class="user-item">
+                        <img src="{{ channel.avatar.url }}" alt="{{ channel.name }}" class="avatar">
+                        <div class="user-info">
+                            <a href="{% url 'channel_detail' channel.id %}" class="username">{{ channel.name }}</a>
+                        </div>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+            {% if request.get_full_path != '/' %}
+            <div class="chat-window">
+                {% block chat %}
+                    {% include 'Dialog/chat.html' %}
+                {% endblock %}
+            </div>
+            {% endif %}
+        </div>
+    </div>
+    {% else %}
+        <p>Вы не авторизованы. Пожалуйста, войдите или зарегистрируйтесь</p>
+    {% endif %}
+{% endblock %}
+
+

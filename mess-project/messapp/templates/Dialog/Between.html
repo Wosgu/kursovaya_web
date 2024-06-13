@@ -1,0 +1,90 @@
+{% extends "base.html" %}
+
+{% block content %}
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    {% if user.is_authenticated %}
+    <div class="osnova">
+        <div class="chat-container">
+                <div class="user-list">
+                    <h3 class="tablename">Пользователи</h3>
+                    <li class="user-item create-chat-button">
+                        <a href="{% url 'create_group_chat' %}" class="username">Создать чат</a>
+                    </li>
+                    <li class="user-item create-chat-button">
+                        <a href="{% url 'create_channel' %}" class="username">Создать канал</a>
+                    </li>
+                    <ul>
+                        {% for user in users %}
+                        <li class="user-item">
+                            <img src="{{ user.profile_picture.url }}" alt="{{ user.username }}" class="avatar">
+                            <div class="user-info">
+                                <a href="{% url 'pers' user.id %}" class="username">{{ user.username }}</a>
+                                <span class="last-message">{{ user.last_message }}</span>
+                            </div>
+                        </li>
+                        <li class="user-item">
+                            {% for chat in chats %}
+                                <img src="{{ chat.imageChat.url }}" alt="{{ chat.name }}" class="avatar">
+                                <div class="user-info">
+                                    <a href="{% url 'group_chat_detail' chat.id %}" class="username">{{ chat.name }}</a>
+                                </div>
+                            {% endfor %}
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                <div class="chat-window">
+                    {% block chat %}
+                    {% load static %}
+
+                    <div id="chat-popup" class="chat-popup">
+                      <span class="chat-popup-close" onclick="closeChatPopup()">&times;</span>
+                      <h2><strong>Выберите чат</strong></h2>
+                      <div class="chat-list">
+                        <h3>Групповые чаты</h3>
+                        {% for chat in user_chats %}
+                          <a href="{% url 'Send_Capturing_a_Message' TypeMessage message 'group' chat.id %}">
+                            <div>
+                              <p class="chat-name">{{ chat.name }}</p>
+                            </div>
+                          </a>
+                        {% empty %}
+                          <em><p>Нет групповых чатов</p></em>
+                        {% endfor %}
+                      </div>
+                      <div class="chat-list">
+                        <h3>Персональные чаты</h3>
+                        {% for user_id in personal_chat_users_ids %}
+                          <a class="1" href="{% url 'Send_Capturing_a_Message' TypeMessage message 'personal' user_id.id %}">
+                            <p class="chat-user">{{ user_id.username }}</p>
+                          </a>
+                        {% empty %}
+                          <em><p>Нет персональных чатов</p></em>
+                        {% endfor %}
+                      </div>
+                      <div class="chat-list">
+                        <h3>Каналы</h3>
+                        {% for channel in subscribed_channels %}
+                          <a href="{% url 'Send_Capturing_a_Message' TypeMessage message 'channel' channel.id %}">
+                            <p class="channel-name">{{ channel.name }}</p>
+                          </a>
+                        {% empty %}
+                          <em><p>Нет подписок на каналы</p></em>
+                        {% endfor %}
+                      </div>
+                    </div>
+                  
+                    {% endblock %}
+                </div>
+            </div>
+        </div>
+    {% else %}
+    <p>Вы не авторизованы. Пожалуйста, войдите или зарегистрируйтесь</p>
+    {% endif %}
+{% endblock %}
+<script>
+  function closeChatPopup() {
+    document.getElementById("chat-popup").style.display = "none";
+  }
+</script>

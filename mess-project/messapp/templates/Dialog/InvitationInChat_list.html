@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+
+{% block content %}
+    {% if user.is_authenticated %}
+        <div class="osnova">
+            <div class="chat-container">
+                <div class="user-list">
+                <h3 class="tablename">Пользователи</h3>
+                    <li class="user-item create-chat-button">
+                    <a href="{% url 'create_group_chat' %}" class="username">Создать чат</a>
+                    </li>
+                    <li class="user-item create-chat-button">
+                    <a href="{% url 'create_channel' %}" class="username">Создать канал</a>
+                    </li>
+                <ul>
+                {% for user in users %}
+                <li class="user-item">
+                <img src="{{ user.profile_picture.url }}" alt="{{ user.username }}" class="avatar">
+                    <div class="user-info">
+                    <a href="{% url 'pers' user.id %}" class="username">{{ user.username }}</a>
+                    <span class="last-message">{{ user.last_message }}</span>
+                    </div>
+                </li>
+                <li class="user-item">
+                {% for chat in chats %}
+                    <img src="{{ chat.imageChat.url }}" alt="{{ chat.name }}" class="avatar">
+                <div class="user-info">
+                    <a href="{% url 'group_chat_detail' chat.id %}" class="username">{{ chat.name }}</a>
+                </div>
+                {% endfor %}
+                </li>
+                {% endfor %}
+                </ul>
+                </div>
+            <h3>Друзья, которых вы можете пригласить в чат:</h3>
+            {% for friend in friends %}
+            <ul>
+            <li>
+            <img src="{{ friend.userprofile.avatar.url }}" class="avatar">
+            <a href="{% url 'Invite' friend.id GroupChatId %}" class="username">{{ friend.username }}</a>
+            </li>
+            </ul>
+            {% endfor %}
+            </div>
+        </div>
+        {% else %}
+        <p>Вы не авторизованы. Пожалуйста, войдите или зарегистрируйтесь</p>
+    {% endif %}
+{% endblock %}

@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="csrf-token" content="{{ csrf_token }}">
+    {% if title %}
+    <title>{{ title }} - Microblog</title>
+    {% else %}
+    <title>Microblog</title>
+    {% endif %}
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/emojionearea.css' %}">
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+</head>
+<header>
+    <nav class="navbar navbar-expand-lg navbar-light">
+        <a class="navbar-brand" href="{% url 'home' %}">ChitChatHub</a>
+        <div class="collapse navbar-collapse">
+            <ul class="navbar-nav ml-auto">
+                {% if not user.is_authenticated %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'register' %}">Регистрация</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'login' %}">Войти</a>
+                </li>
+                {% else %}
+                <button class="theme-toggle" onclick="toggleTheme()"> <span class="theme-toggle-icon" id="theme-icon">☀</span> </button>
+                <a href="{% url 'notification_view' %}"><svg width="3.5vh" height="3.5vh" style="margin-right: 3vh; margin-left: 3vh;margin-top:1vh;" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M15.0002 19C15.0002 20.6569 13.6571 22 12.0002 22C10.3434 22 9.00025 20.6569 9.00025 19M13.7968 6.23856C14.2322 5.78864 14.5002 5.17562 14.5002 4.5C14.5002 3.11929 13.381 2 12.0002 2C10.6195 2 9.50025 3.11929 9.50025 4.5C9.50025 5.17562 9.76825 5.78864 10.2037 6.23856M2.54707 8.32296C2.53272 6.87161 3.3152 5.51631 4.57928 4.80306M21.4534 8.32296C21.4678 6.87161 20.6853 5.51631 19.4212 4.80306M18.0002 11.2C18.0002 9.82087 17.3681 8.49823 16.2429 7.52304C15.1177 6.54786 13.5915 6 12.0002 6C10.4089 6 8.88283 6.54786 7.75761 7.52304C6.63239 8.49823 6.00025 9.82087 6.00025 11.2C6.00025 13.4818 5.43438 15.1506 4.72831 16.3447C3.92359 17.7056 3.52122 18.3861 3.53711 18.5486C3.55529 18.7346 3.58876 18.7933 3.73959 18.9036C3.87142 19 4.53376 19 5.85844 19H18.1421C19.4667 19 20.1291 19 20.2609 18.9036C20.4117 18.7933 20.4452 18.7346 20.4634 18.5486C20.4793 18.3861 20.0769 17.7056 19.2722 16.3447C18.5661 15.1506 18.0002 13.4818 18.0002 11.2Z" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </a>
+                <input type="text" id="user-search" class="search-bar" name="q" placeholder="Search users...">
+                <div id="search-results" class="search-results"></div>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'profile' %}">Профиль</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'logout' %}">Выйти</a>
+                </li>
+                {% endif %}
+            </ul>
+        </div>
+    </nav>
+</header>
+{% load static %}
+<body>
+    {% block content %}{% endblock %}
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="{% static 'js/emojionearea.js' %}"></script>
+    <script src="{% static 'js/emojionearea.min.js' %}"></script>
+    <script>
+        $(document).ready(function() {
+            function getCookie(name) {
+                let cookieValue = null;
+                if (document.cookie && document.cookie !== '') {
+                    const cookies = document.cookie.split(';');
+                    for (let i = 0; i < cookies.length; i++) {
+                        const cookie = cookies[i].trim();
+                        if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                            break;
+                        }
+                    }
+                }
+                return cookieValue;
+            }
+            const csrftoken = getCookie('csrftoken');
+
+            $.ajaxSetup({
+                beforeSend: function(xhr, settings) {
+                    if (!/^(GET|HEAD|OPTIONS|TRACE)$/i.test(settings.type) && !this.crossDomain) {
+                        xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                    }
+                }
+            });
+
+            $('#user-search').on('keyup', function() {
+                let query = $(this).val();
+                if (query.length > 0) {
+                    $.ajax({
+                        url: '{% url "search_users" %}',
+                        data: {
+                            'q': query
+                        },
+                        dataType: 'json',
+                        success: function(data) {
+                            console.log(data); // добавьте эту строку
+                            $('#search-results').empty();
+                            if (data.results.length > 0) {
+                                let results = data.results;
+                                results.forEach(function(result) {
+                                    console.log(result); // добавьте эту строк
+                                    if (result.type == 'channel') {
+                                        // Формируем HTML-код для отображения информации о канале
+                                        $('#search-results').append(`
+                                            <div class="channel-item-profile" data-id="${result.id}">
+                                                <img src="${result.avatar_c}" class="avatar" alt="${result.name_c}">
+                                                <span class="username">${result.name_c}</span>
+                                            </div>
+                                        `);
+                                    } else {
+                                        // Формируем HTML-код для отображения информации о пользователе
+                                        $('#search-results').append(`
+                                            <div class="user-item-profile" data-id="${result.id}">
+                                                <img src="${result.avatar}" class="avatar" alt="${result.username}">
+                                                <span class="username">${result.username}</span>
+                                            </div>
+                                        `);
+                                    }
+                                });
+                            } else {
+                                $('#search-results').append('<div>No results found</div>');
+                            }
+                        }
+                    });
+                } else {
+                    $('#search-results').empty();
+                }
+            });
+            $(document).on('click', '.channel-item-profile', function() {
+                let channelId = $(this).data('id');
+                window.location.href = `/channel_detail/${channelId}/`;
+            });
+            $(document).on('click', '.user-item-profile', function() {
+                let userId = $(this).data('id');
+                window.location.href = `/view_profile/${userId}/`;
+            });
+        });
+          // Инициализируем текстовое поле emojionearea для поля `content`
+        $('#id_content').emojioneArea({
+            pickerPosition: 'bottom',
+            tonesStyle: 'bullet'
+        });
+
+    </script>
+    <script>
+        // Функция для отправки AJAX-запроса и обновления темы
+        function saveTheme(theme) {
+            // Отправляем AJAX-запрос
+            $.ajax({
+                type: 'POST',
+                url: '/save_theme/',
+                data: {
+                    'theme': theme,
+                    'csrfmiddlewaretoken': '{{ csrf_token }}'
+                },
+                dataType: 'json',
+                success: function(response) {
+                    // Успешный ответ от сервера
+                    if (response.message === 'Theme preference saved successfully') {
+                        // Обновляем куку dark_theme
+                        document.cookie = "dark_theme=" + theme + "; path=/";
+                        
+                        // Обновляем тему на странице
+                        if (theme === 'dark-theme') {
+                            document.body.classList.add('dark-theme');
+                        } else {
+                            document.body.classList.remove('dark-theme');
+                        }
+                    } else {
+                        console.error('Ошибка при сохранении предпочтений темы:', response.error);
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error('Ошибка при отправке запроса:', error);
+                }
+            });
+        }
+
+        // Слушатель события для переключения темы
+        function toggleTheme() {
+            var currentTheme = document.body.classList.contains('dark-theme') ? 'dark-theme' : 'light-theme';
+            var newTheme = currentTheme === 'dark-theme' ? 'light-theme' : 'dark-theme';
+            
+            // Вызываем функцию для сохранения темы
+            saveTheme(newTheme);
+        }
+
+        // Считываем значение куки dark_theme и применяем соответствующую тему
+        var darkThemeCookie = document.cookie.replace(/(?:(?:^|.*;\s*)dark_theme\s*\=\s*([^;]*).*$)|^.*$/, "$1");
+        if (darkThemeCookie === 'dark-theme') {
+            document.body.classList.add('dark-theme');
+        } else {
+            document.body.classList.remove('dark-theme');
+        }
+    </script>
+    <style>
+        /* Медиазапрос для экранов меньше 768px */
+    @media (max-width: 767px) {
+        .chat-container {
+            flex-direction: column;
+        }
+    
+        .user-list {
+            width: 150%;
+            border-right: none;
+            border-bottom: 1px solid #ccc;
+        }
+    
+        .chat-container {
+            width: 60%;
+        }
+    
+        .chat-input {
+            padding: 1vh;
+        }
+    
+        .chat-input form input {
+            font-size: 14px;
+        }
+    
+        .send-button {
+            width: 6vh;
+            height: 6vh;
+            padding: 0.5vh 0.5vh;
+        }
+    }
+    
+    /* Медиазапрос для экранов от 768px до 1024px */
+    @media (min-width: 768px) and (max-width: 1024px) {
+        .chat-input form input {
+            font-size: 16px;
+        }
+    
+        .send-button {
+            width: 7vh;
+            height: 7vh;
+            padding: 0.7vh 0.7vh;
+        }
+    }
+    
+    /* Медиазапрос для экранов от 1025px и выше */
+    @media (min-width: 1025px) {
+        .chat-input form input {
+            font-size: 18px;
+        }
+    
+        .send-button {
+            width: 8vh;
+            height: 8vh;
+            padding: 1vh 1vh;
+        }
+    }
+    </style>
+</body>
+</html>

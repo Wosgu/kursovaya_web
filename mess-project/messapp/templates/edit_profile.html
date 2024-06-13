@@ -1,0 +1,91 @@
+{% block content %}
+    <div class="profile-container">
+        <h2>Редактировать профиль</h2>
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            {% for field in form %}
+              <div class="form-group">
+                {{ field.label_tag }}
+                {{ field }}
+                {% if field.errors %}
+                  {% for error in field.errors %}
+                    <small class="text-danger">{{ error }}</small>
+                  {% endfor %}
+                {% endif %}
+              </div>
+            {% endfor %}
+            <button type="submit" class="btn btn-primary btn-block">Сохранить изменения</button>
+        </form>
+    </div>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f7f7f7;
+            display: flex;
+            flex-direction: column;
+        }
+        .profile-container {
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 600px;
+            margin: 0 auto;
+            flex: 1;
+        }
+        .profile-container h2 {
+            margin: 0 0 20px;
+            font-size: 24px;
+            text-align: center;
+        }
+        .profile-container form {
+            display: flex;
+            flex-direction: column;
+        }
+        .profile-container .form-group {
+            margin-bottom: 20px;
+        }
+        .profile-container .form-group label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        .profile-container .form-group input[type="file"],
+        .profile-container .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+        .profile-container form button {
+            align-self: center;
+            padding: 10px 20px;
+            background-color: #6200ea;
+            color: white;
+            border-radius: 5px;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+        }
+    </style>
+
+    <script>
+        function previewImage(event, elementId) {
+            var reader = new FileReader();
+            reader.onload = function(){
+                var output = document.getElementById(elementId);
+                output.src = reader.result;
+            };
+            reader.readAsDataURL(event.target.files[0]);
+        }
+
+        document.getElementById('id_avatar').addEventListener('change', function(event) {
+            previewImage(event, 'avatarPreview');
+        });
+
+        document.getElementById('id_background_image').addEventListener('change', function(event) {
+            previewImage(event, 'backgroundPreview');
+        });
+    </script>
+{% endblock %}

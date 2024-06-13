@@ -1,0 +1,696 @@
+body {
+    background-color: #FAF7FC;
+    font-family: Arial, sans-serif;
+    width: 100%;
+    overflow: hidden;
+}
+
+.navbar {
+    background-color: #F6EDFC;
+}
+
+.navbar-brand {
+    color: #6D4C41;
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+.navbar-nav .nav-item .nav-link {
+    color: #6D4C41;
+}
+
+.navbar-nav .nav-item .nav-link:hover {
+    color: #3E2723;
+}
+
+.chat-container {
+    display: flex;
+    height: calc(100vh - 56px);
+}
+
+.user-list {
+    width: 40%;
+    border-right: 1px solid #ccc;
+    padding: 20px;
+    background-color: #EDE7F6;
+
+    overflow-y: auto; /* Добавляем прокрутку, когда высота списка превышает максимальную высоту */
+}
+
+.user-list ul {
+    margin: 0; /* Убираем отступ у списка */
+    padding: 0; /* Убираем отступ у списка */
+    list-style: none; /* Убираем маркеры у списка */
+}
+  
+.user-item {
+    padding: 10px; /* Отступ вокруг элемента списка */
+    cursor: pointer; /* Меняем курсор при наведении */
+}
+  
+.user-item:hover {
+    background-color: #f0f0f0; /* Цвет фона при наведении */
+}
+  
+.user-list::-webkit-scrollbar {
+    width: 1vh; /* Ширина полосы прокрутки */
+}
+  
+.user-list::-webkit-scrollbar-thumb {
+    background-color: #b199f8; /* Цвет ползунка полосы прокрутки */
+    border-radius: 0.7vh; /* Радиус скругления ползунка полосы прокрутки */
+}
+  
+.user-list::-webkit-scrollbar-track {
+    background-color: transparent; /* Цвет фона трека полосы прокрутки */
+}
+
+.search-bar {
+    width: 100%;
+    border-radius: 20px;
+    border: 1px solid #ccc;
+    margin-right: 1rem;
+}
+.user-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+    padding: 10px;
+    border-radius: 10px;
+    background-color: #FFFFFF;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.user-item-profile {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+    padding: 10px;
+    border-radius: 10px;
+    background-color: #FFFFFF;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.channel-item-profile {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+    padding: 10px;
+    border-radius: 10px;
+    background-color: #FFFFFF;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.user-item:hover {
+    background-color: #D1C4E9;
+}
+
+.avatar {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    margin-right: 10px;
+}
+
+.user-info {
+    flex: 1;
+}
+
+.username {
+    display: block;
+    font-weight: bold;
+    color: #6D4C41;
+}
+
+.last-message {
+    color: #757575;
+}
+
+
+
+.chat-header {
+    padding: 20px;
+    border-bottom: 1px solid #ccc;
+    background-color: #F6EDFC;
+}
+
+.messages {
+    flex: 1;
+    padding: 20px;
+    overflow-y: auto;
+}
+
+.message {
+    margin-bottom: 10px;
+    padding: 10px;
+    border-radius: 10px;
+    background-color: #F6EDFC;
+}
+
+.chat-input {
+    padding: 2vh;
+    border-top: 1px solid #ccc;
+    background-color: #F6EDFC;
+}
+
+.chat-input form {
+    display: flex;
+}
+
+.chat-input form input {
+    flex: 1;
+    padding: 1vh;
+    border-radius: 2vh;
+    border: 1px solid #ccc;
+    margin-right: 1vh;
+}
+
+
+/* Скрываем стандартную кнопку загрузки файлов <-----скрепку настраиваем*/
+input[type="file"]::-webkit-file-upload-button {
+    visibility: hidden;
+}
+
+/* Скрываем имя выбранного файла */
+input[type="file"] {
+    width: 5vh;
+    height: 5vh;
+}
+
+/* Добавляем картинку в качестве фона для поля загрузки файлов */
+input[type="file"] {
+    background-size: cover;
+    background-image: url('../image/paper-clip-svgrepo-com.svg');
+    cursor: pointer;
+}
+
+/* Добавляем стили для поля при наведении */
+input[type="file"]:hover {
+    background-color: #f0f0f0; 
+    border-color: #ccc; /* Цвет границы */
+}
+
+/* Добавляем стили для поля в активном состоянии */
+input[type="file"]:active {
+    background-color: #e0e0e0; 
+    border-color: #aaa; 
+}
+
+.send-button {
+    width: 8vh; /* Ширина кнопки */
+    height: 8vh; /* Высота кнопки */
+    padding: 1vh 1vh;
+    border: none;
+    border-radius: 2vh;
+    background-color: #B199F8;
+    cursor: pointer
+}
+
+.search-container {
+    position: relative;
+    width: 300px; /* Установите ширину, которая соответствует вашей строке поиска */
+}
+
+.search-bar {
+    width: 100%;
+    border-radius: 20px;
+    border: 1px solid #ccc;
+    padding: 10px;
+}
+
+.search-results {
+    position: absolute;
+    top: 100%;
+    left: 70;
+    right: 1;
+    width: 20%;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    z-index: 1000;
+    max-height: 200px;
+    overflow-y: auto;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.user-item {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    border-bottom: 1px solid #eee;
+    cursor: pointer;
+}
+
+.user-item:hover {
+    background-color: #f9f9f9;
+}
+
+.user-item img.avatar {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    margin-right: 10px;
+}
+
+.user-item .username {
+    font-weight: bold;
+}
+.unread {
+    background-color: #991199;
+    font-weight: bold;
+}
+
+.unread .last-message {
+    color: #991199;
+}
+.unread-message {
+    background-color: #EE82EE;
+}
+.form-group label[for="attachment"] {
+    display: inline-flex;
+    align-items: center;
+}
+
+.form-group input[type="file"] {
+    margin-left: 0.5rem;
+    border: none;
+    background-color: transparent;
+}
+
+.form-group input[type="file"]::file-selector-button {
+    border: none;
+    background-color: transparent;
+    cursor: pointer;
+}
+.emojionearea-editor {
+    width: 1000px;
+}
+
+.chat-popup{
+    padding: 2vh;
+    margin: 1vh;
+    border: solid 0.1vh black;
+    border-radius: 2vh;
+    box-shadow: 0 0 1vh 1vh rgba(0, 0, 0, 0.1);
+}
+.chat-list{
+    margin: 3vh;
+}
+.chat-name {
+    margin-left: 5vh;
+    /* базовые стили для имени чата */
+    font-size: 16px;
+    font-weight: bold;
+    color: #845fc8;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+}
+  
+.chat-name:hover {
+    /* стили для эффекта левитации при наведении */
+    transform: translateY(-5px);
+}
+
+.chat-user {
+    margin-left: 5vh;
+    font-size: 16px;
+    font-weight: bold;
+    color: #79c85f;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+}
+  
+.chat-user:hover {
+    transform: translateY(-5px);
+}
+
+.channel-name {
+    margin-left: 5vh;
+    font-size: 16px;
+    font-weight: bold;
+    color: #814ec3;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+}
+  
+.channel-name:hover {
+    transform: translateY(-5px);
+}
+
+
+.chat-header {
+    display: flex; /* Располагаем элементы в одну линию */
+    align-items: center; /* Выравниваем элементы по вертикали */
+    justify-content: space-between; /* Распределяем пространство между элементами */
+}
+  
+.chat-header h3 {
+    margin: 0; /* Убираем отступ у заголовка */
+}
+  
+.chat-header a {
+    display: flex; /* Располагаем элементы в одну линию */
+    align-items: center; /* Выравниваем элементы по вертикали */
+}
+  
+.chat-header img {
+    margin-right: 10px; /* Добавляем отступ справа от аватара */
+}
+
+/*работаем с тёмной темой и элементами*/
+body {
+    background-color: #f0f0f0;
+    color: #333;
+    transition: background-color 0.5s, color 0.5s;
+}
+  
+.dark-theme {
+    background-color: #333;
+    color: #f0f0f0;
+}
+  
+.theme-toggle {
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    font-size: 1.5rem;
+    margin-left: 1rem;
+}
+  
+.theme-toggle-icon {
+    transition: transform 0.5s;
+}
+  
+.dark-theme .theme-toggle-icon {
+    transform: rotate(180deg);
+}
+
+.user-list {
+    width: 25%;
+    border-right: 1px solid #ccc;
+    padding: 20px;
+    background-color: #EDE7F6;
+    overflow-y: auto;
+}
+
+/* Тёмная тема для .user-list */
+.dark-theme .user-list {
+    background-color: #333;
+    border-right-color: #555;
+}
+
+.user-list::-webkit-scrollbar {
+    width: 8px;
+}
+
+.user-list::-webkit-scrollbar-track {
+    background-color: transparent;
+}
+
+.user-list::-webkit-scrollbar-thumb {
+    background-color: #ccc;
+    border-radius: 4px;
+}
+
+/* Тёмная тема для скроллбара в .user-list */
+.dark-theme .user-list::-webkit-scrollbar-thumb {
+    background-color: #bbb;
+}
+
+.user-item {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    border-bottom: 1px solid #eee;
+    cursor: pointer;
+    background-color: #fff;
+    transition: background-color 0.3s;
+}
+
+.user-item:hover {
+    background-color: #f5f5f5;
+}
+
+/* Тёмная тема */
+.dark-theme .user-item {
+    border-bottom-color: #7a7a7a;
+    background-color: #7b7b7b;
+}
+
+.dark-theme .username{
+    color: #a5e78b;
+}
+
+.dark-theme .user-item:hover {
+    background-color: #888888;
+}
+
+/* Тёмная тема для navbar */
+.dark-theme .navbar-light{
+    background-color: #5e4f4f;
+    color: #f0f0f0;
+}
+.dark-theme .navbar-brand{
+    background-color: #5e4f4f;
+    color: #f0f0f0;
+}
+
+.dark-theme .navbar-collapse{
+    background-color: #5e4f4f;
+    color: #f0f0f0;
+}
+
+.dark-theme .navbar-light .nav-link {
+    color: #f0f0f0;
+}
+
+.dark-theme .navbar-light .nav-link:hover {
+    color: #ccc;
+}
+
+/* Тёмная тема для svg-иконки */
+.dark-theme svg path {
+    stroke: #f0f0f0;
+}
+
+/* Тёмная тема для input[type="text"] */
+.dark-theme input[type="text"] {
+    background-color: #4d4d4d;
+    color: #f0f0f0;
+    border: 1px solid #7a7a7a;
+}
+
+.dark-theme input[type="text"]:focus {
+    border-color: #ccc;
+}
+
+/* Тёмная тема для .search-results */
+.dark-theme .search-results {
+    background-color: #4d4d4d;
+    border: 1px solid #7a7a7a;
+}
+
+.dark-theme .search-results .user-item {
+    background-color: #4d4d4d;
+    border-bottom-color: #7a7a7a;
+}
+
+.dark-theme .search-results .user-item:hover {
+    background-color: #888888;
+}
+
+.dark-theme .search-results .user-item .username {
+    color: #f0f0f0;
+}
+
+.dark-theme .search-results .user-item .last-message {
+    color: #ccc;
+}
+
+.dark-theme .chat-header{
+    background-color: #5c5c5c;
+}
+
+.dark-theme .messages{
+    background-color: #4d4d4d
+}
+
+.dark-theme .message{
+    background-color: #4d4d4d;
+    box-shadow: 0px 2px 4px rgba(255, 255, 255, 0.315);
+}
+
+.dark-theme .chat-input{
+    background-color: #4d4d4d;
+}
+
+.dark-theme .emojionearea{
+    background-color: #8c8c8c;
+}
+
+.dark-theme .emojionearea-editor{
+    color: #f0f0f0;
+}
+
+.dark-theme .emojionearea-button-open{
+    background-color: #f0f0f0;
+}
+
+.dark-theme .emojionearea-button-close{
+    background-color: #f0f0f0;
+}
+
+.dark-theme input[type="file"] {
+    background-color: #4d4d4d;
+    border: 1px solid #7a7a7a;
+    color: #f5f5f5;
+    filter: invert(1);
+}
+
+.dark-theme input[type="file"]::file-selector-button {
+    background-color: #7b7b7b;
+    border: 1px solid #7a7a7a;
+    color: #f5f5f5;
+}
+
+.dark-theme input[type="file"]::file-selector-button:hover {
+    background-color: #888888;
+    border: 1px solid #7a7a7a;
+    color: #f5f5f5;
+}
+
+.dark-theme form {
+    background-color: #5d5d5d;
+    color: #fff;
+}
+  
+.dark-theme label {
+    color: #fff;
+}
+  
+.dark-theme input[type="text"],
+.dark-theme input[type="file"],
+.dark-theme select {
+    background-color: #4d4d4d;
+    color: #fff;
+    border: 1px solid #7a7a7a;
+}
+  
+.dark-theme input[type="text"]:focus,
+.dark-theme input[type="file"]:focus,
+.dark-theme select:focus {
+    border-color: #fff;
+}
+  
+.dark-theme button[type="submit"] {
+    background-color: #7b7b7b;
+    color: #fff;
+    border: none;
+}
+  
+.dark-theme button[type="submit"]:hover {
+    background-color: #888888;
+}
+
+/* Стили для тёмной темы */
+.dark-theme select {
+    background-color: #4d4d4d;
+    color: #fff;
+}
+
+.dark-theme option {
+    background-color: #4d4d4d;
+    color: #fff;
+}
+
+.dark-theme option:checked {
+    background-color: #4d4d4d;
+    color: #fff; /* Задаём цвет текста для выбранного элемента */
+}
+
+.dark-theme .chat-window{
+    background-color: #4d4d4d;
+}
+
+/* Ширина полосы прокрутки */
+::-webkit-scrollbar {
+    width: 1vh;
+}
+  
+  /* Стиль трека (фоновой части полосы прокрутки) */
+::-webkit-scrollbar-track {
+    background-color: #9e9e9e;
+}
+  
+  /* Стиль ползунка (части полосы прокрутки, которую можно перемещать) */
+::-webkit-scrollbar-thumb {
+    background-color: #55589f;
+    border-radius: 1vh;
+}
+  
+  /* Стиль ползунка при наведении на него курсора */
+::-webkit-scrollbar-thumb:hover {
+    background-color: #d9d9d9;
+}
+
+
+
+body {
+    overflow-x: hidden; /* Скрываем горизонтальную полосу прокрутки */
+  }
+  
+  .chat-container {
+    width: 100%; /* Задаем контейнеру ширину 100% */
+    max-width: 100%; /* Задаем контейнеру максимальную ширину 100% */
+  }
+  
+  .user-list {
+    flex-shrink: 1; /* Запрещаем сжимать элемент при уменьшении ширины контейнера */
+  }
+  
+  .messages {
+    overflow-x: hidden; /* Скрываем горизонтальную полосу прокрутки */
+  }
+
+
+/* Медиазапрос для экранов меньше 768px */
+@media (max-width: 767px) {
+    .chat-container {
+        flex-direction: column;
+    }
+
+    .user-list {
+        width: 100%;
+        border-right: none;
+        border-bottom: 1px solid #ccc;
+    }
+
+    .chat-window {
+        width: 100%;
+    }
+}
+
+/* Медиазапрос для экранов от 768px до 1024px */
+@media (min-width: 768px) and (max-width: 1024px) {
+    .chat-window {
+        flex: 1 1 30%;
+    }
+}
+
+/* Медиазапрос для экранов от 1025px до 1280px */
+@media (min-width: 1025px) and (max-width: 1280px) {
+    .chat-window {
+        flex: 1 1 70%;
+    }
+}
+
+/* Медиазапрос для экранов от 1281px и выше */
+@media (min-width: 1281px) {
+    .chat-window {
+        flex: 1 1 80%;
+    }
+}
+
